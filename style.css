@@ -101,7 +101,7 @@ button {
 }
 
 button:hover {
-  filter: brightness(110%);
+  filter: brightness(120%);
 }
 
 /* Countdown */
@@ -110,7 +110,7 @@ ul {
 }
 
 li {
-
+  display: inline-block;
   font-size: 30px;
   list-style-type: none;
   padding: 10px;
@@ -129,6 +129,10 @@ li span {
   top: 60px;
 }
 
+/* animate title to celebrate end of countdown */
+.complete-title{
+  animation: complete 4s infinite;
+}
 
 /* Media Query: Large Smartphone (Vertical) */
 @media screen and (max-width: 600px) {
