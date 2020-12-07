@@ -100,7 +100,9 @@ button {
   outline: none;
 }
 
-
+button:hover {
+  filter: brightness(110%);
+}
 
 /* Countdown */
 ul {
