@@ -14,6 +14,13 @@ let countdownTitle = '';
 let countdownDate = '';
 let countdownValue = Date;
 
+// time references
+// second == 1000ms
+const SECOND = 1000;
+const MINUTE = SECOND * 60;
+const HOUR = MINUTE * 60;
+const DAY = HOUR * 24;
+
 // Set Date input [min] attibute to today's date (Future values only)
 const today = new Date().toISOString().split('T')[0];
 // use today programmatically
@@ -24,6 +31,24 @@ function updateDOM() {
   // countdownValue is future date, now is smaller
   const timeToEvent = countdownValue - now;
   console.log('until event:', timeToEvent);
+
+  // calculate days, hours mins, secs
+  const days = Math.floor(timeToEvent / DAY);
+  const hours = Math.floor((timeToEvent % DAY) / HOUR);
+  const mins = Math.floor((timeToEvent % HOUR) / MINUTE);
+  const secs = Math.floor((timeToEvent % MINUTE) / SECOND);
+
+  const calculatedTime = [days, hours, mins, secs];
+
+  // Populate Countdown
+  countdownContainerTitle.textContent = `${countdownTitle}`;
+  for (const i in calculatedTime) {
+    timeElements[i].textContent = `${calculatedTime[i]}`;
+  }
+
+  //  hide input, show countdown
+  inputContainer.hidden = true;
+  countdownContainer.hidden = false;
 }
 
 // capture values from form input
