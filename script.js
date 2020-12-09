@@ -5,7 +5,7 @@ const datePicker = document.getElementById('date-picker');
 // create references to Countdown elements in DOM
 const countdownContainer = document.getElementById('countdown');
 const countdownContainerTitle = document.getElementById('countdown-title');
-const countdownBtn = document.getElementById('countdown-btn');
+const countdownBtn = document.getElementById('countdown-button');
 
 // return all the time fields in an array
 const timeElements = document.querySelectorAll('span');
@@ -13,6 +13,7 @@ const timeElements = document.querySelectorAll('span');
 let countdownTitle = '';
 let countdownDate = '';
 let countdownValue = Date;
+let activeCountdown;
 
 // time references
 // second == 1000ms
@@ -27,28 +28,34 @@ const today = new Date().toISOString().split('T')[0];
 datePicker.setAttribute('min', today);
 
 function updateDOM() {
-  const now = new Date().getTime();
-  // countdownValue is future date, now is smaller
-  const timeToEvent = countdownValue - now;
-  console.log('until event:', timeToEvent);
+    function calculateTime() {
+        const now = new Date().getTime();
+        // countdownValue is future date, now is smaller
+        const timeToEvent = countdownValue - now;
+        console.log('until event:', timeToEvent);
+      
+        // calculate days, hours mins, secs
+        const days = Math.floor(timeToEvent / DAY);
+        const hours = Math.floor((timeToEvent % DAY) / HOUR);
+        const mins = Math.floor((timeToEvent % HOUR) / MINUTE);
+        const secs = Math.floor((timeToEvent % MINUTE) / SECOND);
+      
+        const calculatedTime = [days, hours, mins, secs];
+      
+        // Populate Countdown
+        countdownContainerTitle.textContent = `${countdownTitle}`;
+        for (const i in calculatedTime) {
+          timeElements[i].textContent = `${calculatedTime[i]}`;
+        }
+      
+        //  hide input, show countdown
+        inputContainer.hidden = true;
+        countdownContainer.hidden = false;
+    }
 
-  // calculate days, hours mins, secs
-  const days = Math.floor(timeToEvent / DAY);
-  const hours = Math.floor((timeToEvent % DAY) / HOUR);
-  const mins = Math.floor((timeToEvent % HOUR) / MINUTE);
-  const secs = Math.floor((timeToEvent % MINUTE) / SECOND);
-
-  const calculatedTime = [days, hours, mins, secs];
-
-  // Populate Countdown
-  countdownContainerTitle.textContent = `${countdownTitle}`;
-  for (const i in calculatedTime) {
-    timeElements[i].textContent = `${calculatedTime[i]}`;
-  }
-
-  //  hide input, show countdown
-  inputContainer.hidden = true;
-  countdownContainer.hidden = false;
+    // Calculate time and Update DOM every second.
+    // SECOND already set to 1000ms
+    activeCountdown = setInterval(calculateTime, SECOND);
 }
 
 // capture values from form input
@@ -66,5 +73,19 @@ function updateCountdown(e) {
   updateDOM();
 }
 
+// reset form, cancel interval
+function reset() {
+    // hide countdown, show input
+    countdownContainer.hidden = true;
+    inputContainer.hidden = false;
+    // stop countdown
+    clearInterval(activeCountdown);
+    // Reset Values
+    countdownTitle = '';
+    countdownDate = '';
+}
+
+
 // Event Listener on form submit
 countdownForm.addEventListener('submit', updateCountdown);
+countdownBtn.addEventListener('click', reset);
